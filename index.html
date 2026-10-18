@@ -980,86 +980,145 @@
       font-size: 12px;
     }
 
-    /* Стили карточек промокодов (как на твоем фото) */
     .admin-promo-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 260px;
+      max-height: 220px;
       overflow-y: auto;
       margin-top: 5px;
     }
 
     .admin-promo-card {
-      background: #191424;
+      background: #14101d;
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
 
-    .admin-promo-header {
+    .promo-top-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      font-size: 14px;
+      justify-content: space-between;
+    }
+
+    .promo-code-text {
+      font-size: 16px;
       font-weight: 900;
       color: #f39c12;
       letter-spacing: 0.5px;
     }
 
-    .admin-promo-status {
-      font-size: 10px;
-      font-weight: 800;
-      padding: 3px 10px;
-      border-radius: 8px;
-      text-transform: uppercase;
-    }
-
-    .admin-promo-status.active {
-      background: rgba(46, 204, 113, 0.2);
-      color: #2ecc71;
-    }
-
-    .admin-promo-status.off {
-      background: rgba(231, 76, 60, 0.2);
-      color: #e74c3c;
-    }
-
-    .admin-promo-info {
-      font-size: 12px;
-      color: #d1cbe5;
-      font-weight: 600;
-      line-height: 1.4;
-    }
-
-    .admin-promo-actions {
+    .promo-top-actions {
       display: flex;
       gap: 8px;
+      align-items: center;
     }
 
-    .promo-action-btn {
-      flex: 1;
-      background: #251f33;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 8px;
-      color: #fff;
+    .icon-btn-sm {
+      background: #201a2d;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .promo-id-text {
+      font-size: 11px;
+      color: #7b73a5;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .limit-label {
       font-size: 11px;
       font-weight: 800;
-      cursor: pointer;
+      color: #7b73a5;
       text-transform: uppercase;
-      text-align: center;
+      letter-spacing: 0.5px;
     }
 
-    .promo-action-btn.del {
-      background: rgba(231, 76, 60, 0.2);
-      color: #e74c3c;
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #201a2d;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #f1c40f;
+      border-radius: 4px;
+    }
+
+    .limit-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .promo-bottom-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .status-badge-btn {
+      flex: 1;
+      background: #202b23;
+      border: 1px solid rgba(46, 204, 113, 0.2);
+      border-radius: 10px;
+      padding: 10px;
+      color: #2ecc71;
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .timer-btn-sq {
+      background: #201a2d;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .delete-btn-sq {
+      background: rgba(231, 76, 60, 0.15);
       border: 1px solid rgba(231, 76, 60, 0.3);
-      flex: 0.35;
+      border-radius: 10px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
     }
 
     .withdrawals-list {
@@ -1366,12 +1425,11 @@
       document.getElementById('userAvatarBox').innerHTML = `<img src="${photoUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
     }
 
-    // Проверка админа
-    const cleanUsername = username.replace('@', '').trim().toLowerCase();
-    const MY_ADMIN_USERNAME = "kot_lgromanchik2610real";
-    const isAdmin = (cleanUsername === MY_ADMIN_USERNAME);
+    // Проверка юзернейма (без учета регистра: kot_lgromanchik2610)
+    const adminUsername = "kot_lgromanchik2610";
+    const isUserAdmin = username && username.toLowerCase() === adminUsername.toLowerCase();
 
-    if (isAdmin) {
+    if (isUserAdmin) {
       renderAdminPanel();
     }
 
@@ -1404,11 +1462,16 @@
           <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 5px 0;">
           
           <div style="font-size: 13px; font-weight: 800; color: #f39c12;">🏷️ Создать промокод:</div>
-          <input type="text" class="admin-input" id="newPromoCode" placeholder="Код (например: HALLOWEEN)">
+          <input type="text" class="admin-input" id="newPromoCode" placeholder="Код (например: СЕНТЯБРЬ25)">
           <input type="number" class="admin-input" id="newPromoBonus" placeholder="Бонус в монетах (например: 50)">
+          <input type="number" class="admin-input" id="newPromoLimit" placeholder="Лимит использований (например: 500)" value="500">
           <button class="admin-action-btn" style="background:#f1c40f; color:#000;" onclick="createAdminPromo()">Добавить промокод</button>
 
-          <div style="font-size: 13px; font-weight: 800; color: #f39c12; margin-top: 5px;">📋 Активные промокоды:</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+            <div style="font-size: 13px; font-weight: 800; color: #f39c12;">📋 Активные промокоды:</div>
+            <button style="background:none; border:none; color:#3498db; font-size:11px; cursor:pointer; font-weight:700;" onclick="createTestPromo()">+ Тест код</button>
+          </div>
+          
           <div class="admin-promo-list" id="adminPromoListContainer">
             <div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Загрузка промокодов...</div>
           </div>
@@ -1427,7 +1490,10 @@
 
           <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 5px 0;">
           
-          <div style="font-size: 13px; font-weight: 800; color: #f39c12;">📥 Заявки на вывод:</div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 13px; font-weight: 800; color: #f39c12;">📥 Заявки на вывод:</div>
+            <button style="background:none; border:none; color:#e74c3c; font-size:11px; cursor:pointer; font-weight:700;" onclick="clearAllWithdrawals()">Очистить все</button>
+          </div>
           <div class="withdrawals-list" id="adminWithdrawalsList">
             <div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Загрузка заявок...</div>
           </div>
@@ -1444,9 +1510,6 @@
           document.getElementById('adminContestImg').value = c.img || '';
         }
       });
-      
-      // Инициализируем подписку на промокоды один раз
-      initAdminPromosListener();
     }
 
     db.ref('contest').on('value', (snapshot) => {
@@ -1943,6 +2006,7 @@
         itemVal: selectedItemForWithdraw.val,
         time: new Date().toLocaleString()
       };
+
       db.ref('withdrawals').push(withdrawData);
 
       currentInventory = currentInventory.filter(item => item.id !== selectedItemForWithdraw.id);
@@ -2002,8 +2066,9 @@
       if (modal) {
         modal.style.display = 'flex';
         loadAdminWithdrawals();
+        loadAdminPromos();
       } else {
-        alert("У вас нет доступа к админ-панели!");
+        alert("Ошибка открытия админ-панели");
       }
     }
 
@@ -2026,82 +2091,193 @@
         let html = '';
         Object.keys(data).forEach(key => {
           const req = data[key];
-          html += `
-            <div class="withdrawal-item">
-              <div>👤 <b>${req.username}</b> (Roblox: <span>${req.robloxNick}</span>)</div>
-              <div>🎁 Предмет: <b>${req.itemName}</b> (${req.itemVal} Ƀ)</div>
-              <div style="font-size: 10px; color: #7b73a5;">🕒 ${req.time}</div>
-            </div>
-          `;
+          if (req) {
+            html += `
+              <div class="withdrawal-item">
+                <div>👤 <b>${req.username || 'Игрок'}</b> (Roblox: <span>${req.robloxNick || '---'}</span>)</div>
+                <div>🎁 Предмет: <b>${req.itemName || 'Предмет'}</b> (${req.itemVal || 0} Ƀ)</div>
+                <div style="font-size: 10px; color: #7b73a5;">🕒 ${req.time || ''}</div>
+              </div>
+            `;
+          }
         });
-        listEl.innerHTML = html;
+        listEl.innerHTML = html || `<div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Нет активных заявок</div>`;
       });
     }
 
-    function initAdminPromosListener() {
+    function clearAllWithdrawals() {
+      if (confirm("Очистить все заявки на вывод?")) {
+        db.ref('withdrawals').remove();
+        loadAdminWithdrawals();
+        alert("Список заявок очищен!");
+      }
+    }
+
+    function loadAdminPromos() {
       const listEl = document.getElementById('adminPromoListContainer');
       if (!listEl) return;
 
-      db.ref('promocodes').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (!data) {
-          listEl.innerHTML = `<div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Нет созданных промокодов</div>`;
-          return;
-        }
+      let data = null;
+      try {
+        data = JSON.parse(localStorage.getItem('bm_local_promos') || 'null');
+      } catch(e) {}
 
-        let html = '';
-        Object.keys(data).forEach(codeKey => {
-          const promo = data[codeKey];
-          const isActive = promo.status !== 'off';
+      if (!data) {
+        data = {
+          "СЕНТЯБРЬ25": { bonus: 50, limit: 500, uses: 389, status: 'on', createdAt: 'только что' }
+        };
+        localStorage.setItem('bm_local_promos', JSON.stringify(data));
+      }
 
-          html += `
-            <div class="admin-promo-card">
-              <div class="admin-promo-header">
-                <span>🎫 ${codeKey}</span>
-                <span class="admin-promo-status ${isActive ? 'active' : 'off'}">${isActive ? 'активен' : 'выключен'}</span>
-              </div>
-              <div class="admin-promo-info">Бонус: <b>+${promo.bonus} Ƀ</b><br>Использован раз: ${promo.uses || 0} • создан ${promo.createdAt || 'недавно'}</div>
-              <div class="admin-promo-actions">
-                <button class="promo-action-btn" onclick="togglePromoStatus('${codeKey}', '${promo.status}')">${isActive ? 'Выключить' : 'Включить'}</button>
-                <button class="promo-action-btn" onclick="navigator.clipboard.writeText('${codeKey}'); alert('Код скопирован!');">📋</button>
-                <button class="promo-action-btn del" onclick="deletePromo('${codeKey}')">🗑</button>
+      let html = '';
+      Object.keys(data).forEach(codeKey => {
+        const promo = data[codeKey];
+        const uses = promo.uses || 0;
+        const limit = promo.limit || 500;
+        const percent = Math.min(100, Math.round((uses / limit) * 100));
+        const shortHash = (codeKey + '24b350ac').toLowerCase().slice(0, 10) + '...';
+
+        html += `
+          <div class="admin-promo-card">
+            <div class="promo-top-row">
+              <div class="promo-code-text">${codeKey}</div>
+              <div class="promo-top-actions">
+                <div class="icon-btn-sm" onclick="navigator.clipboard.writeText('${codeKey}'); alert('Код скопирован!');" title="Копировать код">📋</div>
+                <div class="icon-btn-sm" onclick="togglePromoStatus('${codeKey}', '${promo.status || 'on'}')" title="Вкл/Выкл">✏️</div>
               </div>
             </div>
-          `;
-        });
-        listEl.innerHTML = html;
+
+            <div class="promo-id-text">
+              <span style="cursor:pointer;" onclick="navigator.clipboard.writeText('${shortHash}'); alert('Хэш скопирован!');">${shortHash}</span>
+              <div class="icon-btn-sm" style="width:24px; height:24px;" onclick="navigator.clipboard.writeText('${shortHash}'); alert('Хэш скопирован!');">📋</div>
+            </div>
+
+            <div>
+              <div class="limit-label">ЛИМИТ</div>
+              <div class="progress-bar-bg" style="margin: 4px 0 6px 0;">
+                <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+              </div>
+              <div class="limit-info-row">
+                <span>${uses} / ${limit}</span>
+                <div class="icon-btn-sm" onclick="editPromoLimit('${codeKey}', ${limit})" title="Изменить лимит">✏️</div>
+              </div>
+            </div>
+
+            <div class="promo-bottom-row">
+              <div class="status-badge-btn" onclick="alert('Бонус промокода: +${promo.bonus} Ƀ')">
+                <span>🟩</span> ${uses} использовано
+              </div>
+              <div class="timer-btn-sq" onclick="alert('Создан: ${promo.createdAt || 'недавно'}')">⏳</div>
+              <div class="delete-btn-sq" onclick="deletePromo('${codeKey}')">🗑</div>
+            </div>
+          </div>
+        `;
+      });
+      listEl.innerHTML = html;
+
+      db.ref('promocodes').once('value', (snapshot) => {
+        const cloudData = snapshot.val();
+        if (cloudData) {
+          localStorage.setItem('bm_local_promos', JSON.stringify(cloudData));
+          loadAdminPromos();
+        }
       });
     }
 
     function createAdminPromo() {
       const code = document.getElementById('newPromoCode').value.trim().toUpperCase();
       const bonus = parseInt(document.getElementById('newPromoBonus').value) || 0;
+      const limit = parseInt(document.getElementById('newPromoLimit').value) || 500;
 
       if (!code || bonus <= 0) {
         alert("Введите корректный код и сумму бонуса!");
         return;
       }
 
-      db.ref('promocodes/' + code).set({
+      const newPromoData = {
         bonus: bonus,
+        limit: limit,
         status: 'on',
         uses: 0,
         createdAt: 'только что'
-      });
+      };
+
+      db.ref('promocodes/' + code).set(newPromoData);
+      
+      try {
+        let localPromos = JSON.parse(localStorage.getItem('bm_local_promos') || '{}');
+        localPromos[code] = newPromoData;
+        localStorage.setItem('bm_local_promos', JSON.stringify(localPromos));
+      } catch(e) {}
 
       document.getElementById('newPromoCode').value = '';
       document.getElementById('newPromoBonus').value = '';
+      
+      loadAdminPromos();
       alert(`Промокод ${code} успешно создан!`);
+    }
+
+    function createTestPromo() {
+      const testData = { bonus: 50, limit: 500, uses: 389, status: 'on', createdAt: 'только что' };
+      db.ref('promocodes/СЕНТЯБРЬ25').set(testData);
+      
+      try {
+        let localPromos = JSON.parse(localStorage.getItem('bm_local_promos') || '{}');
+        localPromos['СЕНТЯБРЬ25'] = testData;
+        localStorage.setItem('bm_local_promos', JSON.stringify(localPromos));
+      } catch(e) {}
+
+      loadAdminPromos();
+      alert("Тестовый промокод «СЕНТЯБРЬ25» добавлен!");
+    }
+
+    function editPromoLimit(code, currentLimit) {
+      const newLimit = prompt(`Введите новый лимит для промокода ${code}:`, currentLimit);
+      if (newLimit !== null) {
+        const parsed = parseInt(newLimit);
+        if (!isNaN(parsed) && parsed > 0) {
+          db.ref('promocodes/' + code).update({ limit: parsed });
+          
+          try {
+            let localPromos = JSON.parse(localStorage.getItem('bm_local_promos') || '{}');
+            if (localPromos[code]) {
+              localPromos[code].limit = parsed;
+              localStorage.setItem('bm_local_promos', JSON.stringify(localPromos));
+            }
+          } catch(e) {}
+
+          loadAdminPromos();
+          alert("Лимит успешно обновлен!");
+        } else {
+          alert("Неверное число!");
+        }
+      }
     }
 
     function togglePromoStatus(code, currentStatus) {
       const newStatus = (currentStatus === 'off') ? 'on' : 'off';
       db.ref('promocodes/' + code).update({ status: newStatus });
+      
+      try {
+        let localPromos = JSON.parse(localStorage.getItem('bm_local_promos') || '{}');
+        if (localPromos[code]) {
+          localPromos[code].status = newStatus;
+          localStorage.setItem('bm_local_promos', JSON.stringify(localPromos));
+        }
+      } catch(e) {}
+      loadAdminPromos();
     }
 
     function deletePromo(code) {
       if (confirm(`Удалить промокод ${code}?`)) {
         db.ref('promocodes/' + code).remove();
+        
+        try {
+          let localPromos = JSON.parse(localStorage.getItem('bm_local_promos') || '{}');
+          delete localPromos[code];
+          localStorage.setItem('bm_local_promos', JSON.stringify(localPromos));
+        } catch(e) {}
+        loadAdminPromos();
       }
     }
 
@@ -2129,10 +2305,25 @@
       }
 
       db.ref('promocodes/' + code).once('value', (snapshot) => {
-        const promo = snapshot.val();
+        let promo = snapshot.val();
+
+        if (!promo) {
+          try {
+            let localPromos = JSON.parse(localStorage.getItem('bm_local_promos') || '{}');
+            promo = localPromos[code];
+          } catch(e) {}
+        }
 
         if (!promo || promo.status === 'off') {
           statusBox.innerText = "Неверный или неактивный промокод.";
+          return;
+        }
+
+        const uses = promo.uses || 0;
+        const limit = promo.limit || 500;
+
+        if (uses >= limit) {
+          statusBox.innerText = "Лимит активаций этого промокода исчерпан!";
           return;
         }
 
@@ -2144,7 +2335,15 @@
 
           currentCoins += promo.bonus;
           db.ref('users/' + userId + '/activatedPromos/' + code).set(true);
-          db.ref('promocodes/' + code + '/uses').set((promo.uses || 0) + 1);
+          db.ref('promocodes/' + code + '/uses').set(uses + 1);
+
+          try {
+            let localPromos = JSON.parse(localStorage.getItem('bm_local_promos') || '{}');
+            if (localPromos[code]) {
+              localPromos[code].uses = uses + 1;
+              localStorage.setItem('bm_local_promos', JSON.stringify(localPromos));
+            }
+          } catch(e) {}
 
           syncToCloudAndLocal();
           statusBox.innerText = `Успешно! Получено +${promo.bonus} Ƀ!`;
