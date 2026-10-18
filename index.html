@@ -980,40 +980,42 @@
       font-size: 12px;
     }
 
-    /* Стили карточек промокодов в админке (как на фото) */
+    /* Стили карточек промокодов (как на твоем фото) */
     .admin-promo-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 250px;
+      max-height: 260px;
       overflow-y: auto;
       margin-top: 5px;
     }
 
     .admin-promo-card {
-      background: #0d0a14;
+      background: #191424;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 12px;
+      border-radius: 16px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
     .admin-promo-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 900;
-      color: #fff;
+      color: #f39c12;
+      letter-spacing: 0.5px;
     }
 
     .admin-promo-status {
       font-size: 10px;
       font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 6px;
+      padding: 3px 10px;
+      border-radius: 8px;
       text-transform: uppercase;
     }
 
@@ -1028,24 +1030,25 @@
     }
 
     .admin-promo-info {
-      font-size: 11px;
-      color: #b8b2d1;
+      font-size: 12px;
+      color: #d1cbe5;
       font-weight: 600;
+      line-height: 1.4;
     }
 
     .admin-promo-actions {
       display: flex;
-      gap: 6px;
+      gap: 8px;
     }
 
     .promo-action-btn {
       flex: 1;
-      background: #1e182c;
+      background: #251f33;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 6px;
+      border-radius: 10px;
+      padding: 8px;
       color: #fff;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 800;
       cursor: pointer;
       text-transform: uppercase;
@@ -1056,7 +1059,7 @@
       background: rgba(231, 76, 60, 0.2);
       color: #e74c3c;
       border: 1px solid rgba(231, 76, 60, 0.3);
-      flex: 0.4;
+      flex: 0.35;
     }
 
     .withdrawals-list {
@@ -1297,7 +1300,7 @@
         <div class="promo-desc">Введи код: бонус на баланс, предмет в инвентарь или место в колесе</div>
         
         <div class="promo-form-row">
-          <input type="text" class="promo-input" id="promoInput" placeholder="HALLOWEEN">
+          <input type="text" class="promo-input" id="promoInput" placeholder="HAPPYHALLOWEEN2026">
           <button class="promo-activate-btn" onclick="activatePromo()">Активировать</button>
         </div>
 
@@ -1441,6 +1444,9 @@
           document.getElementById('adminContestImg').value = c.img || '';
         }
       });
+      
+      // Инициализируем подписку на промокоды один раз
+      initAdminPromosListener();
     }
 
     db.ref('contest').on('value', (snapshot) => {
@@ -1996,7 +2002,6 @@
       if (modal) {
         modal.style.display = 'flex';
         loadAdminWithdrawals();
-        loadAdminPromos();
       } else {
         alert("У вас нет доступа к админ-панели!");
       }
@@ -2033,7 +2038,7 @@
       });
     }
 
-    function loadAdminPromos() {
+    function initAdminPromosListener() {
       const listEl = document.getElementById('adminPromoListContainer');
       if (!listEl) return;
 
@@ -2058,6 +2063,7 @@
               <div class="admin-promo-info">Бонус: <b>+${promo.bonus} Ƀ</b><br>Использован раз: ${promo.uses || 0} • создан ${promo.createdAt || 'недавно'}</div>
               <div class="admin-promo-actions">
                 <button class="promo-action-btn" onclick="togglePromoStatus('${codeKey}', '${promo.status}')">${isActive ? 'Выключить' : 'Включить'}</button>
+                <button class="promo-action-btn" onclick="navigator.clipboard.writeText('${codeKey}'); alert('Код скопирован!');">📋</button>
                 <button class="promo-action-btn del" onclick="deletePromo('${codeKey}')">🗑</button>
               </div>
             </div>
@@ -2130,14 +2136,12 @@
           return;
         }
 
-        // Проверяем, активировал ли пользователь этот код ранее
         db.ref('users/' + userId + '/activatedPromos/' + code).once('value', (usedSnap) => {
           if (usedSnap.exists()) {
             statusBox.innerText = "Вы уже активировали этот промокод!";
             return;
           }
 
-          // Начисляем бонус
           currentCoins += promo.bonus;
           db.ref('users/' + userId + '/activatedPromos/' + code).set(true);
           db.ref('promocodes/' + code + '/uses').set((promo.uses || 0) + 1);
