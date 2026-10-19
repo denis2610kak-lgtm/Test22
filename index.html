@@ -1425,7 +1425,7 @@
       document.getElementById('userAvatarBox').innerHTML = `<img src="${photoUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
     }
 
-    // Проверка юзернейма (без учета регистра: kot_lgromanchik2610)
+    // Проверка юзернейма (kot_lgromanchik2610)
     const adminUsername = "kot_lgromanchik2610";
     const isUserAdmin = username && username.toLowerCase() === adminUsername.toLowerCase();
 
@@ -1527,7 +1527,7 @@
           <div class="contest-card">
             <div class="contest-badge">🔥 Активный конкурс</div>
             <div class="contest-title">${contest.title || 'Конкурс'}</div>
-            ${contest.img ? `<img src="\${contest.img}" class="contest-img">` : ''}
+            ${contest.img ? `<img src="${contest.img}" class="contest-img">` : ''}
             <div class="contest-desc">${(contest.desc || '').replace(/\n/g, '<br>')}</div>
           </div>
         `;
@@ -2077,6 +2077,7 @@
       if (modal) modal.style.display = 'none';
     }
 
+    // Загрузка заявок с автоматической нумерацией (#1, #2, ...)
     function loadAdminWithdrawals() {
       const listEl = document.getElementById('adminWithdrawalsList');
       if (!listEl) return;
@@ -2089,16 +2090,21 @@
         }
 
         let html = '';
+        let index = 1;
         Object.keys(data).forEach(key => {
           const req = data[key];
           if (req) {
             html += `
               <div class="withdrawal-item">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
+                  <span style="font-weight: 900; color: #f39c12; font-size: 13px;">#${index}</span>
+                  <span style="font-size: 10px; color: #7b73a5;">${req.time || ''}</span>
+                </div>
                 <div>👤 <b>${req.username || 'Игрок'}</b> (Roblox: <span>${req.robloxNick || '---'}</span>)</div>
                 <div>🎁 Предмет: <b>${req.itemName || 'Предмет'}</b> (${req.itemVal || 0} Ƀ)</div>
-                <div style="font-size: 10px; color: #7b73a5;">🕒 ${req.time || ''}</div>
               </div>
             `;
+            index++;
           }
         });
         listEl.innerHTML = html || `<div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Нет активных заявок</div>`;
