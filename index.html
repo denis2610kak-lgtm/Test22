@@ -1425,11 +1425,9 @@
       document.getElementById('userAvatarBox').innerHTML = `<img src="${photoUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
     }
 
-    // Проверка юзернейма (kot_lgromanchik2610)
-    const adminUsername = "kot_lgromanchik2610";
-    const isUserAdmin = username && username.toLowerCase() === adminUsername.toLowerCase();
-
-    if (isUserAdmin) {
+    // Проверка владельца админ-панели по юзернейму
+    const ADMIN_USERNAME = "kot_lgromanchik2610";
+    if (username && username.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
       renderAdminPanel();
     }
 
@@ -1490,10 +1488,7 @@
 
           <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 5px 0;">
           
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-size: 13px; font-weight: 800; color: #f39c12;">📥 Заявки на вывод:</div>
-            <button style="background:none; border:none; color:#e74c3c; font-size:11px; cursor:pointer; font-weight:700;" onclick="clearAllWithdrawals()">Очистить все</button>
-          </div>
+          <div style="font-size: 13px; font-weight: 800; color: #f39c12;">📥 Заявки на вывод:</div>
           <div class="withdrawals-list" id="adminWithdrawalsList">
             <div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Загрузка заявок...</div>
           </div>
@@ -1998,16 +1993,24 @@
         return;
       }
 
+      const withdrawId = 'w_' + Date.now();
       const withdrawData = {
+        id: withdrawId,
         userId: userId,
         username: username ? "@" + username : "@Guest",
         robloxNick: nick,
         itemName: selectedItemForWithdraw.name,
         itemVal: selectedItemForWithdraw.val,
-        time: new Date().toLocaleString()
+        time: new Date().toLocaleTimeString()
       };
 
-      db.ref('withdrawals').push(withdrawData);
+      db.ref('withdrawals/' + withdrawId).set(withdrawData, (error) => {
+        if (error) {
+          alert("Ошибка сохранения заявки: " + error.message);
+        } else {
+          console.log("Заявка успешно записана!");
+        }
+      });
 
       currentInventory = currentInventory.filter(item => item.id !== selectedItemForWithdraw.id);
       syncToCloudAndLocal();
@@ -2077,13 +2080,16 @@
       if (modal) modal.style.display = 'none';
     }
 
-    // Загрузка заявок с автоматической нумерацией (#1, #2, ...)
+    // Загрузка заявок в реальном времени (поддерживает любой формат данных)
     function loadAdminWithdrawals() {
       const listEl = document.getElementById('adminWithdrawalsList');
       if (!listEl) return;
       
-      db.ref('withdrawals').once('value', (snapshot) => {
+      listEl.innerHTML = `<div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Загрузка заявок...</div>`;
+
+      db.ref('withdrawals').on('value', (snapshot) => {
         const data = snapshot.val();
+        
         if (!data) {
           listEl.innerHTML = `<div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Нет активных заявок</div>`;
           return;
@@ -2091,9 +2097,10 @@
 
         let html = '';
         let index = 1;
-        Object.keys(data).forEach(key => {
-          const req = data[key];
-          if (req) {
+        const items = Array.isArray(data) ? data : Object.values(data);
+
+        items.forEach(req => {
+          if (req && typeof req === 'object') {
             html += `
               <div class="withdrawal-item">
                 <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 4px; margin-bottom: 4px;">
@@ -2107,16 +2114,12 @@
             index++;
           }
         });
-        listEl.innerHTML = html || `<div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Нет активных заявок</div>`;
-      });
-    }
 
-    function clearAllWithdrawals() {
-      if (confirm("Очистить все заявки на вывод?")) {
-        db.ref('withdrawals').remove();
-        loadAdminWithdrawals();
-        alert("Список заявок очищен!");
-      }
+        listEl.innerHTML = html || `<div style="font-size: 11px; color: #7b73a5; text-align: center; padding: 10px;">Нет активных заявок</div>`;
+      }, (error) => {
+        console.error("Ошибка чтения заявок из Firebase:", error);
+        listEl.innerHTML = `<div style="font-size: 11px; color: #e74c3c; text-align: center; padding: 10px;">Ошибка доступа к базе данных!</div>`;
+      });
     }
 
     function loadAdminPromos() {
